@@ -355,7 +355,8 @@ curl -X POST http://localhost:6000/reports/generate \
 
 ### Essential Reading
 - **[KALI_INSTALL.md](KALI_INSTALL.md)** - Kali Linux installation (recommended)
-- **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - Complete usage guide with examples
+- **[WEB_DASHBOARD_GUIDE.md](WEB_DASHBOARD_GUIDE.md)** - Complete web dashboard user guide
+- **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - API and CLI usage guide with examples
 - **[LIVE_PROGRESS.md](LIVE_PROGRESS.md)** - Real-time project status
 
 ### Technical Documentation
