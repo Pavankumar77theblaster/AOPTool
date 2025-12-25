@@ -9,11 +9,6 @@ const nextConfig = {
     NEXT_PUBLIC_WS_URL: process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws',
   },
 
-  // Disable telemetry
-  telemetry: {
-    disabled: true,
-  },
-
   // Output configuration
   output: 'standalone',
 }

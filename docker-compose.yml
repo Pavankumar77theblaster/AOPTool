@@ -1,5 +1,3 @@
-version: '3.8'
-
 # AOPTool - Docker Compose Configuration
 # This file defines the entire infrastructure stack
 

@@ -15,10 +15,6 @@
     @apply border-dark-border;
   }
 
-  html {
-    @apply dark;
-  }
-
   body {
     @apply bg-dark-bg text-dark-text font-sans antialiased;
     @apply min-h-screen;

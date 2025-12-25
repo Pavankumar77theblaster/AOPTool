@@ -14,9 +14,9 @@ RUN npm ci
 # Copy application code
 COPY . .
 
-# Create non-root user
-RUN addgroup -g 1000 aoptool && \
-    adduser -D -u 1000 -G aoptool aoptool && \
+# Create non-root user (use automatic GID to avoid conflicts)
+RUN addgroup aoptool && \
+    adduser -D -G aoptool aoptool && \
     chown -R aoptool:aoptool /app
 
 USER aoptool

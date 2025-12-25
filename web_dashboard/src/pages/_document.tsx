@@ -9,7 +9,6 @@ export default function Document() {
           name="description"
           content="AOPTool - AI-Powered Autonomous Penetration Testing Platform"
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Security Headers */}
         <meta
