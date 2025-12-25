@@ -317,6 +317,35 @@ services:
         reservations:
           memory: 256M
 
+  reporting_plane:
+    build:
+      context: ./reporting_plane
+      dockerfile: Dockerfile
+    container_name: aoptool_reporting_plane
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aoptool_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-aoptool}
+      REPORT_OUTPUT_DIR: /app/reports
+      PORT: 6000
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - ./reporting_plane:/app
+      - ./reports:/app/reports
+    ports:
+      - "6000:6000"
+    networks:
+      - aoptool_network
+    restart: unless-stopped
+    command: python main.py
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 384M
+
   # ================================
   # MONITORING & ML SERVICES (Optional)
   # ================================

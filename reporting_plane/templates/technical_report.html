@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Technical Report - {{ target.name }}</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <h1>Penetration Test - Technical Report</h1>
+        <div class="meta-info">
+            <p><strong>Target:</strong> {{ target.name }} ({{ target.url_or_ip }})</p>
+            <p><strong>Scope:</strong> {{ target.scope }}</p>
+            <p><strong>Test Execution ID:</strong> #{{ execution.id }}</p>
+            <p><strong>Duration:</strong> {{ statistics.duration_formatted }}</p>
+            <p><strong>Report Generated:</strong> {{ generated_at }}</p>
+        </div>
+
+        <!-- Test Overview -->
+        <h2>1. Test Overview</h2>
+        <p>
+            This penetration test was conducted using AOPTool, an AI-powered autonomous penetration testing platform.
+            The test consisted of {{ statistics.total_attacks }} attack vectors across multiple security categories.
+        </p>
+
+        <h3>Test Statistics</h3>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Attacks Executed</td>
+                <td>{{ statistics.total_attacks }}</td>
+            </tr>
+            <tr>
+                <td>Successful Completions</td>
+                <td>{{ statistics.completed_attacks }}</td>
+            </tr>
+            <tr>
+                <td>Failed Attacks</td>
+                <td>{{ statistics.failed_attacks }}</td>
+            </tr>
+            <tr>
+                <td>Success Rate</td>
+                <td>{{ statistics.success_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Total Findings</td>
+                <td>{{ statistics.total_findings }}</td>
+            </tr>
+        </table>
+
+        <!-- Findings Details -->
+        <h2>2. Detailed Findings</h2>
+        {% if findings %}
+            {% for finding in findings %}
+            <div class="finding">
+                <h3>
+                    <span class="severity-{{ finding.risk_level }}">{{ finding.risk_level.upper() }}</span>
+                    {{ finding.attack_name }}
+                </h3>
+
+                <table class="finding-details">
+                    <tr>
+                        <th>Category</th>
+                        <td>{{ finding.category }}</td>
+                    </tr>
+                    <tr>
+                        <th>CVSS Score</th>
+                        <td>
+                            {% if finding.cvss %}
+                                {{ finding.cvss.base_score }} ({{ finding.cvss.severity }})
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>CVSS Vector</th>
+                        <td>
+                            {% if finding.cvss %}
+                                <code>{{ finding.cvss.vector_string }}</code>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Discovered</th>
+                        <td>{{ finding.discovered_at.strftime('%Y-%m-%d %H:%M:%S') if finding.discovered_at else 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Evidence Files</th>
+                        <td>{{ finding.evidence_count }} files</td>
+                    </tr>
+                </table>
+
+                <h4>Description</h4>
+                <p>{{ finding.description }}</p>
+
+                {% if finding.details %}
+                <h4>Technical Details</h4>
+                <div class="code-block">{{ finding.details }}</div>
+                {% endif %}
+
+                {% if finding.evidence_files %}
+                <h4>Evidence</h4>
+                <ul>
+                    {% for evidence_file in finding.evidence_files %}
+                    <li>{{ evidence_file }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <h4>Remediation</h4>
+                <p>
+                    {% if finding.risk_level == 'critical' %}
+                    <strong>IMMEDIATE ACTION REQUIRED:</strong> This critical vulnerability must be addressed before deployment.
+                    {% elif finding.risk_level == 'high' %}
+                    <strong>HIGH PRIORITY:</strong> Address this vulnerability in the current development cycle.
+                    {% elif finding.risk_level == 'medium' %}
+                    Plan remediation for the next sprint.
+                    {% else %}
+                    Address when convenient as part of regular maintenance.
+                    {% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No vulnerabilities were discovered during this assessment.</p>
+        {% endif %}
+
+        <!-- Attack Timeline -->
+        <h2>3. Attack Execution Timeline</h2>
+        {{ timeline_html|safe }}
+
+        <!-- All Attacks Executed -->
+        <h2>4. Complete Attack List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Attack Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attack in attacks %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ attack.name }}</td>
+                    <td>{{ attack.category }}</td>
+                    <td>
+                        {% if attack.status == 'completed' %}
+                            <span class="status-success">✓ Completed</span>
+                        {% elif attack.status == 'failed' %}
+                            <span class="status-failed">✗ Failed</span>
+                        {% else %}
+                            <span class="status-unknown">{{ attack.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if attack.started_at and attack.completed_at %}
+                            {{ ((attack.completed_at - attack.started_at).total_seconds())|int }}s
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Evidence Summary -->
+        {% if evidence %}
+        <h2>5. Evidence Files</h2>
+        <p>Total evidence files collected: <strong>{{ evidence|length }}</strong></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ev in evidence %}
+                <tr>
+                    <td>{{ ev.file_name }}</td>
+                    <td>{{ ev.evidence_type }}</td>
+                    <td>{{ (ev.file_size / 1024)|round(2) }} KB</td>
+                    <td>{{ ev.created_at.strftime('%Y-%m-%d %H:%M:%S') if ev.created_at else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Generated by AOPTool - Autonomous Penetration Testing Platform</p>
+            <p>{{ generated_at }}</p>
+        </div>
+    </div>
+</body>
+</html>
