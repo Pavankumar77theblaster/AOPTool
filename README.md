@@ -178,6 +178,8 @@ AOPTool is a **production-ready, AI-orchestrated penetration testing platform** 
 
 ### Installation
 
+**⚡ Want just the commands?** See **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** for copy-paste ready commands!
+
 See detailed installation guides:
 - **[Kali Linux Installation Guide](KALI_INSTALL.md)** ⭐ Recommended for pentesters
 - **[Windows Installation Guide](WINDOWS_INSTALL.md)**
@@ -354,6 +356,7 @@ curl -X POST http://localhost:6000/reports/generate \
 ## 📚 Documentation
 
 ### Essential Reading
+- **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** ⭐ - Copy-paste commands for Windows & Kali
 - **[KALI_INSTALL.md](KALI_INSTALL.md)** - Kali Linux installation (recommended)
 - **[WEB_DASHBOARD_GUIDE.md](WEB_DASHBOARD_GUIDE.md)** - Complete web dashboard user guide
 - **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - API and CLI usage guide with examples
