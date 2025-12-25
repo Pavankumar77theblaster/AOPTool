@@ -6,6 +6,9 @@ import Layout from '@/components/layout/Layout'
 import Card, { CardContent, CardHeader, CardTitle } from '@/components/common/Card'
 import Badge from '@/components/common/Badge'
 import Spinner from '@/components/common/Spinner'
+import VulnerabilityDonutChart from '@/components/dashboard/VulnerabilityDonutChart'
+import TerminalActivityFeed from '@/components/dashboard/TerminalActivityFeed'
+import ResourceUtilization from '@/components/dashboard/ResourceUtilization'
 import { getControlPlaneHealth, getIntelligencePlaneHealth, getDashboardStats } from '@/lib/api'
 import { formatRelativeTime } from '@/lib/utils'
 
@@ -44,8 +47,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* System Health */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* System Health & Resources */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <div className="flex items-center justify-between">
               <div>
@@ -97,6 +100,10 @@ export default function Dashboard() {
               </div>
             </div>
           </Card>
+
+          <Card>
+            <ResourceUtilization />
+          </Card>
         </div>
 
         {/* Stats Grid */}
@@ -140,45 +147,75 @@ export default function Dashboard() {
               </Card>
             </div>
 
-            {/* Recent Executions */}
+            {/* Recent Executions and Vulnerability Distribution */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>Recent Executions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {stats.recent_executions && stats.recent_executions.length > 0 ? (
+                    <div className="space-y-3">
+                      {stats.recent_executions.map((execution) => (
+                        <div
+                          key={execution.execution_id}
+                          className="flex items-center justify-between p-3 bg-dark-hover rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <p className="text-dark-text font-medium">{execution.attack_name}</p>
+                            <p className="text-sm text-dark-muted">{execution.target_name}</p>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Badge variant="execution" value={execution.status as any}>
+                              {execution.status}
+                            </Badge>
+                            <span className="text-sm text-dark-muted">
+                              {formatRelativeTime(execution.started_at)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-dark-muted">No executions yet</p>
+                      <Link
+                        href="/plans/new"
+                        className="text-primary-400 hover:text-primary-300 text-sm mt-2 inline-block"
+                      >
+                        Create your first attack plan →
+                      </Link>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Vulnerability Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <VulnerabilityDonutChart
+                      critical={3}
+                      high={8}
+                      medium={15}
+                      low={12}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Live Terminal Activity Feed */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Executions</CardTitle>
+                <CardTitle>Live Activity Feed</CardTitle>
               </CardHeader>
               <CardContent>
-                {stats.recent_executions && stats.recent_executions.length > 0 ? (
-                  <div className="space-y-3">
-                    {stats.recent_executions.map((execution) => (
-                      <div
-                        key={execution.execution_id}
-                        className="flex items-center justify-between p-3 bg-dark-hover rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <p className="text-dark-text font-medium">{execution.attack_name}</p>
-                          <p className="text-sm text-dark-muted">{execution.target_name}</p>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <Badge variant="execution" value={execution.status as any}>
-                            {execution.status}
-                          </Badge>
-                          <span className="text-sm text-dark-muted">
-                            {formatRelativeTime(execution.started_at)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-dark-muted">No executions yet</p>
-                    <Link
-                      href="/plans/new"
-                      className="text-primary-400 hover:text-primary-300 text-sm mt-2 inline-block"
-                    >
-                      Create your first attack plan →
-                    </Link>
-                  </div>
-                )}
+                <div className="h-96">
+                  <TerminalActivityFeed />
+                </div>
               </CardContent>
             </Card>
           </>

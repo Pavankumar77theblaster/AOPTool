@@ -35,6 +35,7 @@ export interface DashboardStats {
   active_executions: number
   total_evidence: number
   success_rate: number
+  risk_distribution: Record<string, number>
   recent_executions: Array<{
     execution_id: number
     attack_name: string

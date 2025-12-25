@@ -18,6 +18,11 @@
   body {
     @apply bg-dark-bg text-dark-text font-sans antialiased;
     @apply min-h-screen;
+    /* Grid background for depth */
+    background-image:
+      radial-gradient(circle at 1px 1px, rgb(55 65 81 / 0.15) 1px, transparent 0);
+    background-size: 40px 40px;
+    background-position: 0 0;
   }
 
   /* Custom scrollbar for dark theme */
