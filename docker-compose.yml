@@ -136,7 +136,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       DEBUG: ${DEBUG:-false}
     volumes:
-      - ./control_plane:/app:ro
+      - ./control_plane:/app
       - ./reports:/app/reports
     ports:
       - "8000:8000"
@@ -175,12 +175,16 @@ services:
       ENABLE_AI_TRANSLATION: ${ENABLE_AI_TRANSLATION:-true}
       USE_LOCAL_LLM: ${USE_LOCAL_LLM:-false}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      PORT: 5000
     volumes:
-      - ./intelligence_plane:/app:ro
+      - ./intelligence_plane:/app
       - ./training_model:/training_model:ro
       - ./models:/models
+    ports:
+      - "5000:5000"
     networks:
       - aoptool_network
+    command: uvicorn main:app --host 0.0.0.0 --port 5000 --reload
     restart: unless-stopped
     deploy:
       resources:
@@ -213,7 +217,7 @@ services:
       RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-100}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
-      - ./execution_plane:/app:ro
+      - ./execution_plane:/app
       - /var/run/docker.sock:/var/run/docker.sock  # Access to Docker daemon for tool containers
       - ./tool_outputs:/tool_outputs
       - ./wordlists:/wordlists:ro
@@ -246,7 +250,7 @@ services:
       CELERY_WORKER_CONCURRENCY: ${CELERY_WORKER_CONCURRENCY:-4}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
-      - ./execution_plane:/app:ro
+      - ./execution_plane:/app
       - /var/run/docker.sock:/var/run/docker.sock
       - ./tool_outputs:/tool_outputs
     networks:
@@ -274,10 +278,11 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/0
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
-      - ./execution_plane:/app:ro
+      - ./execution_plane:/app
+      - celery_beat_data:/var/lib/celery
     networks:
       - aoptool_network
-    command: celery -A tasks beat --loglevel=info
+    command: celery -A tasks beat --loglevel=info --schedule=/var/lib/celery/celerybeat-schedule
     restart: unless-stopped
     deploy:
       resources:
@@ -436,6 +441,8 @@ volumes:
   redis_data:
     driver: local
   minio_data:
+    driver: local
+  celery_beat_data:
     driver: local
   nuclei_templates:
     driver: local
