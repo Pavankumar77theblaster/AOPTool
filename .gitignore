@@ -1,0 +1,193 @@
+# AOPTool .gitignore
+
+# ================================
+# CRITICAL: NEVER COMMIT SECRETS
+# ================================
+.env
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+secrets.yaml
+
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+*.log
+.mypy_cache/
+.pytype/
+.pyre/
+
+# ================================
+# Node / JavaScript
+# ================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.next/
+out/
+build/
+.cache/
+
+# ================================
+# Docker
+# ================================
+docker-compose.override.yml
+
+# ================================
+# Database Data (Volumes)
+# ================================
+postgres_data/
+mongo_data/
+redis_data/
+minio_data/
+
+# ================================
+# Evidence & Reports (Large Files)
+# ================================
+tool_outputs/*.pcap
+tool_outputs/*.jpg
+tool_outputs/*.png
+reports/*.pdf
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.onnx
+
+# ================================
+# Logs
+# ================================
+*.log
+logs/
+celery_logs/
+
+# ================================
+# IDEs & Editors
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.DS_Store
+Thumbs.db
+
+# ================================
+# OS Files
+# ================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ================================
+# Temporary Files
+# ================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# ================================
+# Training Model Resources (Optional - Keep)
+# ================================
+# Uncomment if training resources are too large
+# training_model/exploits/*.pdf
+# training_model/attack_flows/*.mp4
+
+# ================================
+# MLflow
+# ================================
+mlruns/
+mlartifacts/
+
+# ================================
+# Jupyter Notebooks
+# ================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ================================
+# Environment-Specific
+# ================================
+.env.local
+.env.development
+.env.test
+.env.production
+
+# ================================
+# Security Scan Results (Keep in Git)
+# ================================
+# Reports should be kept but exclude large evidence
+# Uncomment if you want to exclude all reports:
+# reports/
+
+# ================================
+# Wordlists (Optional - Large)
+# ================================
+# Uncomment if wordlists are too large:
+# wordlists/*.txt
+# Keep example/small wordlists in git
+
+# ================================
+# Package Locks (Optional)
+# ================================
+# Uncomment if you want to exclude:
+# package-lock.json
+# yarn.lock
+
+# ================================
+# Test Coverage
+# ================================
+.nyc_output/
+coverage/
+
+# ================================
+# Keep These Files (Override)
+# ================================
+!.gitkeep
+!.env.example
+!init_scripts/**
+!README.md
+!LICENSE
